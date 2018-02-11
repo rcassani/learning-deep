@@ -1,3 +1,6 @@
+# Checkpoint files
+checkpoints/
+
 # temporal file
 temp.py
 

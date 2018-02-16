@@ -30,6 +30,8 @@ class LearningLoop(object):
         self.epochs_no_improv = 0
         self.best_val_loss = float('inf')
         
+        self.tqdm_ncols = 80
+        
         # if a specific checkpoint (int) is indicated and it exists, restart from that checkpoint
         if checkpoint_load and self.checkpoint_flag:
             ckpt_filename = self.checkpoint_filename.format(checkpoint_load)
@@ -42,10 +44,10 @@ class LearningLoop(object):
             self.model.train()
             train_loss = 0.0
             train_acc  = 0.0      
-            train_bar_text = 'Epoch {:03d} / {:03d}'.format(self.ix_epoch , n_epochs)
-      
+            train_bar_text = 'Training data  '
+            
             n_batch = self.train_loader.__len__()
-            for batch in tqdm(self.train_loader, desc=train_bar_text, ncols=100, unit='batch'):
+            for batch in tqdm(self.train_loader, desc=train_bar_text, ncols=self.tqdm_ncols, unit='batch'):
                 new_train_loss, new_train_acc = self.train_batch(batch)
                 train_loss += new_train_loss
                 train_acc  += new_train_acc
@@ -61,7 +63,7 @@ class LearningLoop(object):
             valid_bar_text = 'Validation data'
           
             n_batch = self.valid_loader.__len__()
-            for batch in tqdm(self.valid_loader, desc=valid_bar_text, ncols=100, unit='batch'):
+            for batch in tqdm(self.valid_loader, desc=valid_bar_text, ncols=self.tqdm_ncols, unit='batch'):
                 new_valid_loss, new_valid_acc = self.eval_batch(batch)
                 valid_loss += new_valid_loss
                 valid_acc  += new_valid_acc
@@ -94,7 +96,7 @@ class LearningLoop(object):
         test_bar_text ='Testing   data'
     
         n_batch = self.test_loader.__len__()
-        for batch in tqdm(self.test_loader, desc=test_bar_text, ncols=100, unit='batch'):
+        for batch in tqdm(self.test_loader, desc=test_bar_text, ncols=self.tqdm_ncols, unit='batch'):
             new_test_loss, new_test_acc = self.eval_batch(batch)
             test_loss += new_test_loss
             test_acc  += new_test_acc

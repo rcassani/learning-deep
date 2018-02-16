@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct 25 16:03:00 2017
-Trains a MLP on average (across channels) Modulation Spectrogram 
 @author: cassani
 """
 
@@ -14,7 +13,7 @@ from learning_loop import LearningLoop
 from torch.utils.data.dataloader import DataLoader
 import torch.optim as optim
 
-# python -i train_dnn.py --epochs=40 --path-train=../data/mnist_train.hdf5 --path-valid=../data/mnist_validation.hdf5 --path-test=../data/mnist_test.hdf5 --ngpus=1 --lr=0.4 --model=simple_mlp 
+# python -i train_dnn.py --epochs=40 --path-train=../data/mnist_train.hdf5 --path-valid=../data/mnist_validation.hdf5 --path-test=../data/mnist_test.hdf5 --ngpus=1 --lr=0.4 --model=simple_mlp
 
 # Training settings
 parser = argparse.ArgumentParser(description='Template PyTorch')
@@ -47,8 +46,8 @@ args = parser.parse_args()
 # validate checkpoint-path input
 if args.checkpoint_path == '' or args.checkpoint_path == 'None':
   args.checkpoint_path = None
-  
-# Verify CUDA 
+
+# Verify CUDA
 cuda_flag = args.ngpus > 0 and torch.cuda.is_available()
 print('CUDA Mode is: ' +  str(cuda_flag))
 
@@ -69,7 +68,7 @@ train_loader = DataLoader(train_dataset, batch_size=args.train_batch_size, shuff
 valid_loader = DataLoader(valid_dataset, batch_size=args.valid_batch_size, shuffle=True, num_workers=args.n_workers)
 test_loader  = DataLoader(test_dataset , batch_size=args.test_batch_size , shuffle=True, num_workers=args.n_workers)
 
-# 1. Model design and GPU capability 
+# 1. Model design and GPU capability
 print('Model = ' + args.model)
 model = getattr(model_zoo, args.model)()
 
@@ -82,19 +81,19 @@ if cuda_flag:
 
 # 2. Loss and Optimizer
 optimizer = optim.SGD(model.parameters(), lr=args.lr)
-loss_funct = torch.nn.CrossEntropyLoss() 
+loss_funct = torch.nn.CrossEntropyLoss()
 
 # 3. Create training loop and train
-learner = LearningLoop(model, optimizer, loss_funct, 
+learner = LearningLoop(model, optimizer, loss_funct,
                        train_loader=train_loader, valid_loader=valid_loader,
-                       checkpoint_path=args.checkpoint_path, checkpoint_load=args.checkpoint_load, 
+                       checkpoint_path=args.checkpoint_path, checkpoint_load=args.checkpoint_load,
                        cuda_flag=cuda_flag)
 
 # Train
 learner.train(n_epochs=args.epochs, patience = args.patience)
 
 # Recreate the model, load final state and test
-tester = LearningLoop(model, optimizer, loss_funct, 
+tester = LearningLoop(model, optimizer, loss_funct,
                       test_loader=test_loader, cuda_flag=cuda_flag)
 
 # Load final state

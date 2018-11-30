@@ -8,12 +8,12 @@ Created on Wed Oct 25 16:03:00 2017
 import argparse
 import torch
 import model_zoo
-from dataloaders_mnist import Loader
+from dataloaders_cifar10 import Loader
 from learning_loop import LearningLoop
 from torch.utils.data.dataloader import DataLoader
 import torch.optim as optim
 
-# python -i train_dnn.py --epochs=40 --ngpus=1 --lr=0.4 --model=simple_mlp
+# python -i train_dnn.py --epochs=40 --ngpus=1 --lr=0.4 --model=small_cnn
 
 # Training settings
 parser = argparse.ArgumentParser(description='Template PyTorch')

@@ -117,15 +117,15 @@ class LearningLoop(object):
       
         x = Variable(x, requires_grad=False)
         y = Variable(y, requires_grad=False)
-    
+        
         y_hat = self.model.forward(x)         # foward pass
         loss = self.loss_funct(y_hat, y)      # compute loss
         self.optimizer.zero_grad()            # set gradients to zero
         loss.backward()                       # backpropagation
         self.optimizer.step()                 # step to update parameters
         acc = self.accuracy(y_hat, y)         # accuracy
-    
-        return loss.data[0], acc
+        
+        return loss.item(), acc
 
     def eval_batch(self, batch):
         x, y = batch
@@ -142,8 +142,8 @@ class LearningLoop(object):
         y_hat = self.model.forward(x)         # foward pass
         loss = self.loss_funct(y_hat, y)      # compute loss
         acc = self.accuracy(y_hat, y)         # accuracy
-
-        return loss.data[0], acc
+        
+        return loss.item(), acc
 
     def save_state_file(self, filename):
         # Save state file
@@ -177,12 +177,12 @@ class LearningLoop(object):
         y_hat_v = torch.max(y_hat, dim=1)[1]
         y_v = torch.max(y, dim=1)[1]
         acc = torch.mean((y_hat_v == y_v).type(torch.FloatTensor))
-        return acc.data[0]
+        return acc.item()
 
     def accuracy(self, y_hat, y):
         y_hat_v = torch.max(y_hat, dim=1)[1]
         acc = torch.mean((y_hat_v == y).type(torch.FloatTensor))
-        return acc.data[0]
+        return acc.item()
 
     def print_params_norms(self):
         norm = 0.0

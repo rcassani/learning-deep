@@ -8,7 +8,7 @@ Created on Wed Oct 25 16:03:00 2017
 import argparse
 import torch
 import model_zoo
-from dataloaders_cifar10 import Loader
+from dataloaders_mnist import Loader
 from learning_loop import LearningLoop
 from torch.utils.data.dataloader import DataLoader
 import torch.optim as optim

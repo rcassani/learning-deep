@@ -21,9 +21,11 @@ from dataloaders_mnist_ram import Loader
 from learning_loop import LearningLoop    # general learning loop
 
 # Terminal: 
-# python -i train_dnn.py --epochs=40 --ngpus=1 --lr=1 --l2=1 --train-batch-size=50000 --test-batch-size=10000 --valid-batch-size=10000 --model=mlp_notebook
+# python -i train_dnn.py --epochs=20 --ngpus=1 --lr=0.5 --l2=1 --model=mlp_notebook
 # Spyder terminal
-# runfile('train_dnn.py', '--epochs=40 --ngpus=1 --lr=1 --l2=1 --train-batch-size=50000 --test-batch-size=10000 --valid-batch-size=10000 --model=mlp_notebook')
+# runfile('train_dnn.py', '--epochs=20 --ngpus=1 --lr=0.5 --l2=1 --model=mlp_notebook')
+
+# runfile('train_dnn.py', '--epochs=50 --ngpus=1 --lr=1 --l2=1 --model=mlp_notebook --train-batch-size=50000')
 
 
 # Training settings
@@ -109,11 +111,41 @@ tester.load_state_file('./final_state.pt')
 # Test
 tester.test()
 
+# Ploting loss vs iterations
+plt.figure()
+ix = np.arange(tester.ix_epoch)
+plt.plot(ix, np.array(tester.history['train_loss']))
 
+#%% Plotting some weight
+# A. Weights from Input layer to Hidden layer 1
+w1 = tester.model.fc1.weight.data.cpu().numpy()
+plt.figure()
 for ix_w in range(25):
     tmp = np.reshape(w1[ix_w,:], [28,28])
     ax = plt.subplot(5,5, ix_w + 1)
     ax.set_yticklabels([])
     ax.set_xticklabels([])
     plt.title(str(ix_w))
-    plt.imshow(1- tmp, cmap='gray')
+    plt.imshow(1- tmp, cmap='gray')    
+    
+# B. Weights from Hidden layer 1 to Hidden layer 2    
+w2 = tester.model.fc2.weight.data.cpu().numpy()
+plt.figure()
+for ix_w in range(10):
+    tmp = np.reshape(w2[ix_w,:], [5,5])
+    ax = plt.subplot(2,5, ix_w + 1)
+    ax.set_yticklabels([])
+    ax.set_xticklabels([])
+    plt.title(str(ix_w))
+    plt.imshow(1- tmp, cmap='gray')   
+    
+# C. Weights from Hidden layer 2 to Output layer
+w3 = tester.model.fc3.weight.data.cpu().numpy()
+plt.figure()
+for ix_w in range(10):
+    tmp = np.reshape(w3[ix_w,:], [1,10])
+    ax = plt.subplot(10,1, ix_w + 1)
+    ax.set_yticklabels([])
+    ax.set_xticklabels([])
+    plt.title(str(ix_w))
+    plt.imshow(1- tmp, cmap='gray')   

@@ -75,7 +75,7 @@ print(mlp_classifier)
     
     
 #%%# Training with Backpropagation and 400 iterations
-iterations = 100
+iterations = 400
 loss = np.zeros([iterations,1])
 
 for ix in range(iterations):

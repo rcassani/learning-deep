@@ -7,13 +7,24 @@ Created on Wed Oct 25 16:03:00 2017
 
 import argparse
 import torch
-import model_zoo
-from dataloaders_mnist_ram import Loader
-from learning_loop import LearningLoop
 from torch.utils.data.dataloader import DataLoader
 import torch.optim as optim
+import matplotlib.pyplot as plt
+import numpy as np
 
-# python -i train_dnn.py --epochs=40 --ngpus=1 --lr=0.4 --model=simple_mlp
+import model_zoo                         # model to train 
+
+# import scripts from the 'utils' directory 
+import sys
+sys.path.append('../../utils/')
+from dataloaders_mnist_ram import Loader
+from learning_loop import LearningLoop    # general learning loop
+
+# Terminal: 
+# python -i train_dnn.py --epochs=20 --ngpus=1 --lr=0.5 --l2=1 --model=small_cnn
+# Spyder terminal
+# runfile('train_dnn.py', '--epochs=20 --ngpus=1 --lr=0.5 --l2=1 --model=small_cnn')
+
 
 # Training settings
 parser = argparse.ArgumentParser(description='Template PyTorch')
@@ -97,3 +108,51 @@ tester.load_state_file('./final_state.pt')
 
 # Test
 tester.test()
+
+# Ploting loss vs iterations
+plt.figure()
+ix = np.arange(tester.ix_epoch)
+plt.plot(ix, np.array(tester.history['train_loss']))
+
+#%% Plotting some weight
+# A. Weights from Input layer to Hidden layer 1
+kernels = np.squeeze(tester.model.features[0].weight.data.cpu().numpy())
+plt.figure()
+for ix_k in range(10):
+    tmp = kernels[ix_k, :, :]
+    ax = plt.subplot(4,3, ix_k + 1)
+    ax.set_yticklabels([])
+    ax.set_xticklabels([])
+    plt.title(str(ix_k))
+    plt.imshow(1- tmp, cmap='gray')    
+    
+#%% Feature map for few examples
+
+for ix_e in range(5):
+    plt.figure()
+    
+    # Plot random examples
+    example_tuple = train_dataset.__getitem__(ix_e)    
+    x_tensor = example_tuple[0].view([1,1,28,28])
+    x = np.squeeze(x_tensor.data.numpy())
+    y = example_tuple[1].data.numpy()
+    
+    
+    ax = plt.subplot(4,3, 12)
+    ax.set_yticklabels([])
+    ax.set_xticklabels([])
+    plt.title(str(y))
+    plt.imshow(x, cmap='gray') 
+    
+    tmp_tensor = tester.model.features[0](x_tensor)
+    
+    for ix_k in range(10):
+        ax = plt.subplot(4,3, ix_k + 1)
+        ax.set_yticklabels([])
+        ax.set_xticklabels([])
+        plt.title(str(ix_k))
+        plt.imshow(tmp_tensor.data.numpy()[0, ix_k, :, :], cmap='gray') 
+    
+    
+
+    

@@ -25,7 +25,7 @@ class LearningLoop(object):
         self.train_loader = train_loader
         self.valid_loader = valid_loader
         self.test_loader = test_loader
-        self.history = {'train_loss': [], 'valid_loss': []}
+        self.history = {'train_loss': [], 'valid_loss': [], 'train_acc': [], 'valid_acc': []}
         self.ix_epoch = 0
         self.epochs_no_improv = 0
         self.best_val_loss = float('inf')
@@ -55,6 +55,7 @@ class LearningLoop(object):
             train_loss = train_loss / n_batch
             train_acc  = train_acc / n_batch
             self.history['train_loss'].append(train_loss)
+            self.history['train_acc'].append(train_acc)
       
             ## VALIDATION
             self.model.eval()
@@ -71,7 +72,9 @@ class LearningLoop(object):
             valid_loss = valid_loss / n_batch
             valid_acc  = valid_acc / n_batch
             self.history['valid_loss'].append(valid_loss)
+            self.history['valid_acc'].append(valid_acc)
 
+            print('')
             print('Train: loss: {:.4f}    acc: {:.4f} '.format(train_loss, train_acc))
             print('Valid: loss: {:.4f}    acc: {:.4f} '.format(valid_loss, valid_acc))
 

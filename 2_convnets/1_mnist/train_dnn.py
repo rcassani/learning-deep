@@ -109,10 +109,16 @@ tester.load_state_file('./final_state.pt')
 # Test
 tester.test()
 
-# Ploting loss vs iterations
+#%% Ploting loss vs iterations
 plt.figure()
 ix = np.arange(tester.ix_epoch)
 plt.plot(ix, np.array(tester.history['train_loss']))
+plt.hold
+plt.plot(ix, np.array(tester.history['valid_loss']))
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend(['Training','Validation'])
+
 
 #%% Plotting some weight
 # A. Weights from Input layer to Hidden layer 1
@@ -127,7 +133,6 @@ for ix_k in range(10):
     plt.imshow(1- tmp, cmap='gray')    
     
 #%% Feature map for few examples
-
 for ix_e in range(5):
     plt.figure()
     
@@ -144,7 +149,7 @@ for ix_e in range(5):
     plt.title(str(y))
     plt.imshow(x, cmap='gray') 
     
-    tmp_tensor = tester.model.features[0](x_tensor)
+    tmp_tensor = tester.model.features[0](x_tensor.cuda()).cpu()
     
     for ix_k in range(10):
         ax = plt.subplot(4,3, ix_k + 1)

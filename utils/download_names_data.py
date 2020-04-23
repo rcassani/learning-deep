@@ -12,14 +12,14 @@ import urllib.request
 import zipfile
 import os 
 
-# make mnist directory
+# make directory
 try:
     os.mkdir('../data/names/')
 except OSError:
     pass
         
 
-# download MNIST
+# download 
 ulr_names_pytorch = 'https://download.pytorch.org/tutorial/data.zip'
 names_filename = 'data.zip'
 urllib.request.urlretrieve(ulr_names_pytorch, '../data/names/' + names_filename)

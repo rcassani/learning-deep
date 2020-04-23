@@ -6,14 +6,11 @@ A deep forward network or [multilayer perceptron (MLP)](https://en.wikipedia.org
 </p>
 
 <p align="center">
-Example architecture of a MLP  
-Image from [https://github.com/ledell/sldm4-h2o/blob/master/sldm4-deeplearning-h2o.Rmd]
+Example architecture of a MLP. Image [source](https://github.com/ledell/sldm4-h2o/blob/master/sldm4-deeplearning-h2o.Rmd)
 </p>
 
 </br>
 
+* The scripts in `mlp-example` present the MLP class (`mlp.py`), which is an numpy didactic implementation, in other words, it's not optimized, though it's well commented.
 
-
-1. The Jupyter notebook [`mlp_notebook.ipynb`](mlp_notebook.ipynb) has as goal to show the use the MLP class [`mlp.py`](mlp.py) provided. The implementation of the MLP has didactic purposes, in other words, it's not optimized, though it's well commented. It's mostly based on the lectures for weeks 4 and 5 (neural networks) in the the MOOC [Machine Learning](https://www.coursera.org/learn/machine-learning#%20) taught by from Andrew Ng and notes from the chapter 6 (deep forward networks) from the [Deep Learning](http://www.deeplearningbook.org/).
-
-2. The Jupyter notebook [`mlp_examples.ipynb`](mlp_examples.ipynb) shows the similarities and differences of diverse implementations of MLP, using the above described `mlp` class, `numpy`, and Pytorch tensors (on CPU and GPU) and Pytorch framework (on CPU and GPU).
+* The `1_mnist` folder contains the training and testing of a MLP, these actions are performed using as base the [`0_pytorch_template`](../0_pytorch_template)

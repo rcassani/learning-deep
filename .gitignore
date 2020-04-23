@@ -1,5 +1,5 @@
 # Checkpoint files
-checkpoints/
+ckpt*/
 
 # temporal file
 temp.py

@@ -1,0 +1,3 @@
+[submodule "1_deep_forward_networks/mlp-example"]
+	path = 1_deep_forward_networks/mlp-example
+	url = https://github.com/rcassani/mlp-example.git

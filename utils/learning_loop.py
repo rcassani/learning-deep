@@ -91,7 +91,9 @@ class LearningLoop(object):
       else:
         self.epochs_no_improv += 1
 
-    # save final model
+    # load last ckpt file
+    self.load_state_file(ckpt_filename)
+    # save final state 
     self.save_state_file('./final_state_' + self.model_name + '.pt')
     return
 

@@ -9,8 +9,9 @@ import argparse
 import torch
 from torch.utils.data.dataloader import DataLoader
 import torch.optim as optim
+import os
 
-import model_template                         # model to train 
+import model_zoo                         # model to train 
 
 # import scripts from the 'utils' directory 
 import sys
@@ -41,17 +42,19 @@ parser.add_argument('--l2', type=float, default=0.00001, metavar='lambda', help=
 
 parser.add_argument('--ngpus', type=int, default=0, help='Number of GPUs to use. Default=0 (no GPU)')
 
-parser.add_argument('--checkpoint-path', type=str, default='./checkpoints', metavar='PATH', help='Directory for checkpoint files, if None or empty string, checkpoints are not saved')
-parser.add_argument('--checkpoint-load', type=int, default=None, metavar='N', help='Indicates epoch to restart. If None, training starts from scratch')
+parser.add_argument('--ckpt-path', type=str, default='./ckpts', metavar='PATH', help='Directory for checkpoint files, if None or empty string, checkpoints are not saved')
+parser.add_argument('--ckpt-load', type=int, default=None, metavar='N', help='Indicates epoch to restart. If None, training starts from scratch')
 
 parser.add_argument('--seed', type=int, default=1, metavar='N', help='random seed (default: 1)')
 parser.add_argument('--n-workers', type=int, default=1, metavar='N', help='Number of workers for dataloaders')
 
+parser.add_argument('--final-state', action='store_true', help='If this flag is present and the final state file exists, it is loaded')
+
 args = parser.parse_args()
 
-# validate checkpoint-path input
-if args.checkpoint_path == '' or args.checkpoint_path == 'None':
-  args.checkpoint_path = None
+# validate ckpt-path input
+if args.ckpt_path == '' or args.ckpt_path == 'None':
+  args.ckpt_path = None
 
 # Verify CUDA
 cuda_flag = args.ngpus > 0 and torch.cuda.is_available()
@@ -76,34 +79,35 @@ test_loader  = DataLoader(test_dataset , batch_size=args.test_batch_size , shuff
 
 # 1. Model design and GPU capability
 print('Model = ' + args.model)
-model = getattr(model_template, args.model)()
+model = getattr(model_zoo, args.model)()
 
 # Load model in GPU(s)
 if cuda_flag:
-    if args.ngpus > 1:
-        model = torch.nn.DataParallel(model, device_ids=list(range(args.ngpus)))
-    else:
-        model = model.cuda()
+  if args.ngpus > 1:
+    model = torch.nn.DataParallel(model, device_ids=list(range(args.ngpus)))
+  else:
+    model = model.cuda()
 
 # 2. Loss and Optimizer
 optimizer = optim.SGD(model.parameters(), lr=args.lr)
 loss_funct = torch.nn.CrossEntropyLoss()
 
-# 3. Create training loop and train
-learner = LearningLoop(model, optimizer, loss_funct,
+if not (args.final_state and os.path.exists('./final_state_' + args.model + '.pt')):
+  # 3. Create training loop and train
+  learner = LearningLoop(args.model, model, optimizer, loss_funct,
                        train_loader=train_loader, valid_loader=valid_loader,
-                       checkpoint_path=args.checkpoint_path, checkpoint_load=args.checkpoint_load,
+                       ckpt_path=args.ckpt_path, ckpt_load=args.ckpt_load,
                        cuda_flag=cuda_flag)
 
-# Train
-learner.train(n_epochs=args.epochs, patience = args.patience)
+  # Train
+  learner.train(n_epochs=args.epochs, patience = args.patience)
 
 # Recreate the model, load final state and test
-tester = LearningLoop(model, optimizer, loss_funct,
+tester = LearningLoop(args.model, model, optimizer, loss_funct,
                       test_loader=test_loader, cuda_flag=cuda_flag)
 
 # Load final state
-tester.load_state_file('./final_state.pt')
+tester.load_state_file( './final_state_' + args.model + '.pt')
 
 # Test
 tester.test()

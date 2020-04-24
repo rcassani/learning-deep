@@ -11,6 +11,7 @@ from torch.utils.data.dataloader import DataLoader
 import torch.optim as optim
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 import model_zoo                         # model to train 
 
@@ -21,9 +22,9 @@ from dataloaders_mnist_ram import Loader
 from learning_loop import LearningLoop    # general learning loop
 
 # Terminal: 
-# python -i train_dnn.py --epochs=20 --ngpus=1 --lr=0.5 --l2=1 --model=small_cnn
+# python -i train_dnn.py --epochs=100 --ngpus=1 --lr=0.5 --l2=1 --model=small_cnn
 # Spyder terminal
-# runfile('train_dnn.py', '--epochs=20 --ngpus=1 --lr=0.5 --l2=1 --model=small_cnn')
+# runfile('train_dnn.py', '--epochs=100 --ngpus=1 --lr=0.5 --l2=1 --model=small_cnn')
 
 
 # Training settings
@@ -42,17 +43,19 @@ parser.add_argument('--l2', type=float, default=0.00001, metavar='lambda', help=
 
 parser.add_argument('--ngpus', type=int, default=0, help='Number of GPUs to use. Default=0 (no GPU)')
 
-parser.add_argument('--checkpoint-path', type=str, default='./checkpoints', metavar='PATH', help='Directory for checkpoint files, if None or empty string, checkpoints are not saved')
-parser.add_argument('--checkpoint-load', type=int, default=None, metavar='N', help='Indicates epoch to restart. If None, training starts from scratch')
+parser.add_argument('--ckpt-path', type=str, default='./ckpts', metavar='PATH', help='Directory for checkpoint files, if None or empty string, checkpoints are not saved')
+parser.add_argument('--ckpt-load', type=int, default=None, metavar='N', help='Indicates epoch to restart. If None, training starts from scratch')
 
 parser.add_argument('--seed', type=int, default=1, metavar='N', help='random seed (default: 1)')
 parser.add_argument('--n-workers', type=int, default=1, metavar='N', help='Number of workers for dataloaders')
 
+parser.add_argument('--final-state', action='store_true', help='If this flag is present and the final state file exists, it is loaded')
+
 args = parser.parse_args()
 
-# validate checkpoint-path input
-if args.checkpoint_path == '' or args.checkpoint_path == 'None':
-  args.checkpoint_path = None
+# validate ckpt-path input
+if args.ckpt_path == '' or args.ckpt_path == 'None':
+  args.ckpt_path = None
 
 # Verify CUDA
 cuda_flag = args.ngpus > 0 and torch.cuda.is_available()
@@ -61,10 +64,7 @@ print('CUDA Mode is: ' +  str(cuda_flag))
 # Random seed
 torch.manual_seed(args.seed)
 if cuda_flag:
-    torch.cuda.manual_seed(args.seed)
-
-# Loader will put all the dataset in RAM
-ram = True
+  torch.cuda.manual_seed(args.seed)
 
 # Datasets and DataLoaders
 train_dataset = Loader('train')
@@ -73,7 +73,7 @@ test_dataset  = Loader('test')
 
 train_loader = DataLoader(train_dataset, batch_size=args.train_batch_size, shuffle=True, num_workers=args.n_workers)
 valid_loader = DataLoader(valid_dataset, batch_size=args.valid_batch_size, shuffle=True, num_workers=args.n_workers)
-test_loader  = DataLoader(test_dataset , batch_size=args.test_batch_size , shuffle=True, num_workers=args.n_workers)
+test_loader  = DataLoader(test_dataset , batch_size=args.test_batch_size , shuffle=False, num_workers=args.n_workers)
 
 # 1. Model design and GPU capability
 print('Model = ' + args.model)
@@ -81,47 +81,59 @@ model = getattr(model_zoo, args.model)()
 
 # Load model in GPU(s)
 if cuda_flag:
-    if args.ngpus > 1:
-        model = torch.nn.DataParallel(model, device_ids=list(range(args.ngpus)))
-    else:
-        model = model.cuda()
+  if args.ngpus > 1:
+    model = torch.nn.DataParallel(model, device_ids=list(range(args.ngpus)))
+  else:
+    model = model.cuda()
 
 # 2. Loss and Optimizer
 optimizer = optim.SGD(model.parameters(), lr=args.lr)
 loss_funct = torch.nn.CrossEntropyLoss()
 
-# 3. Create training loop and train
-learner = LearningLoop(model, optimizer, loss_funct,
+if not (args.final_state and os.path.exists('./final_state_' + args.model + '.pt')):
+  # 3. Create training loop and train
+  learner = LearningLoop(args.model, model, optimizer, loss_funct,
                        train_loader=train_loader, valid_loader=valid_loader,
-                       checkpoint_path=args.checkpoint_path, checkpoint_load=args.checkpoint_load,
+                       ckpt_path=args.ckpt_path, ckpt_load=args.ckpt_load,
                        cuda_flag=cuda_flag)
 
-# Train
-learner.train(n_epochs=args.epochs, patience = args.patience)
+  # Train
+  learner.train(n_epochs=args.epochs, patience = args.patience)
 
 # Recreate the model, load final state and test
-tester = LearningLoop(model, optimizer, loss_funct,
+tester = LearningLoop(args.model, model, optimizer, loss_funct,
                       test_loader=test_loader, cuda_flag=cuda_flag)
 
 # Load final state
-tester.load_state_file('./final_state.pt')
+tester.load_state_file( './final_state_' + args.model + '.pt')
 
 # Test
-tester.test()
+y_hat_tensor = tester.test()
+y_hat = y_hat_tensor.cpu().numpy()
 
-#%% Ploting loss vs iterations
+
+#%% Plots
+# Ploting loss vs iterations
 plt.figure()
 ix = np.arange(tester.ix_epoch)
 plt.plot(ix, np.array(tester.history['train_loss']))
-plt.hold
 plt.plot(ix, np.array(tester.history['valid_loss']))
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.legend(['Training','Validation'])
+plt.legend(['training set', 'validation set'])
+plt.xlabel('epochs')
+plt.ylabel('loss')
+
+# Ploting acc vs iterations
+plt.figure()
+ix = np.arange(tester.ix_epoch)
+plt.plot(ix, np.array(tester.history['train_acc']))
+plt.plot(ix, np.array(tester.history['valid_acc']))
+plt.legend(['training set', 'validation set'])
+plt.xlabel('epochs')
+plt.ylabel('accuracy')
 
 
 #%% Plotting some weight
-# A. Weights from Input layer to Hidden layer 1
+# A. Weights
 kernels = np.squeeze(tester.model.features[0].weight.data.cpu().numpy())
 plt.figure()
 for ix_k in range(10):

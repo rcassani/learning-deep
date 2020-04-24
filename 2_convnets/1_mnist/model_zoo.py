@@ -26,7 +26,7 @@ class small_cnn(nn.Module):
 class medium_cnn(nn.Module):
     # Model
     def __init__(self):
-        super(small_cnn, self).__init__()
+        super(medium_cnn, self).__init__()
         self.features = nn.Sequential(
             nn.Conv2d(1, 10, kernel_size=3, padding=1),
             nn.ReLU(True),  

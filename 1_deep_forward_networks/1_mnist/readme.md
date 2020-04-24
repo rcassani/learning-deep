@@ -24,16 +24,15 @@ Both models were trained with a learning rate of 0.5, L2 of 1, a maximun number 
 ## Examples of classification
 These are some examples from the test set, [T]rue and [P]redicted labels are indicated.
 
-<center>
+<p align="center">
 <img src="https://user-images.githubusercontent.com/8238803/80164991-6690ff80-85a8-11ea-9a75-1df8b8d5183f.png" style="width: 100%;"/>
-
-Classification results with `mlp_simple` model
-</center>  
+Classification results with <code>mlp_simple</code> model
+</p>
 
 ## Plotting some weights
 Lastly, these are the plots for the weights between the input layer and the first hidden layer
 
-<center>
+<p align="center">
 <img src="https://user-images.githubusercontent.com/8238803/80164987-642ea580-85a8-11ea-9e99-f9cc02f3db77.png" style="width: 100%;"/><br>
-Weights `W1` in `mlp_simple` model
-</center>  
+Weights <code>W1</code> in <code>mlp_simple</code> model
+</p>

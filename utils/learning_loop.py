@@ -4,24 +4,24 @@ from torch.autograd import Variable
 from tqdm import tqdm
 
 class LearningLoop(object):
-  def __init__(self, model_name, model, optimizer, loss_funct, 
-               train_loader=None, valid_loader=None, test_loader=None, 
+  def __init__(self, model_name, model, optimizer, loss_funct,
+               train_loader=None, valid_loader=None, test_loader=None,
                ckpt_path=None, ckpt_load=None, cuda_flag=False):
-   
+
     self.model_name = model_name
     self.model = model
     self.optimizer = optimizer
     self.loss_funct = loss_funct
     self.train_loader = train_loader
     self.valid_loader = valid_loader
-    self.test_loader = test_loader   
+    self.test_loader = test_loader
     self.cuda_flag = cuda_flag
 
   # are checkpoints required?
     if ckpt_path:
       ckpt_path = ckpt_path + '_' + self.model_name
       if not os.path.isdir(ckpt_path):
-        os.mkdir(ckpt_path)        
+        os.mkdir(ckpt_path)
       self.ckpt_path = ckpt_path
       self.ckpt_filename = os.path.join(self.ckpt_path, 'ckpt_{:03d}.pt')
       self.ckpt_flag = True
@@ -31,30 +31,30 @@ class LearningLoop(object):
     self.history = {'train_loss': [], 'valid_loss': [], 'train_acc': [], 'valid_acc': []}
     self.ix_epoch = 0
     self.epochs_no_improv = 0
-    self.best_val_acc = 0     
+    self.best_val_acc = 0
     self.tqdm_ncols = 80
-        
+
     # if a specific checkpoint (ckpt_load) is indicated and it exists, restart from that checkpoint
     if ckpt_load and self.ckpt_flag:
       ckpt_filename = self.ckpt_filename.format(ckpt_load)
       self.load_state_file(ckpt_filename)
     return
-     
+
   def train(self, n_epochs=1, patience=5):
     while self.ix_epoch < n_epochs and self.epochs_no_improv < patience:
       self.ix_epoch += 1
       ## TRAINING
       self.model.train()
       train_loss = 0.0
-      train_acc  = 0.0      
+      train_acc  = 0.0
       train_bar_text = 'Training data  '
-      
+
       n_batch = self.train_loader.__len__()
       for batch in tqdm(self.train_loader, desc=train_bar_text, ncols=self.tqdm_ncols, unit='batch'):
         new_train_loss, new_train_acc = self.train_batch(batch)
         train_loss += new_train_loss
         train_acc  += new_train_acc
-      
+
       train_loss = train_loss / n_batch
       train_acc  = train_acc / n_batch
       self.history['train_loss'].append(train_loss)
@@ -63,9 +63,9 @@ class LearningLoop(object):
       ## VALIDATION
       self.model.eval()
       valid_loss = 0.0
-      valid_acc  = 0.0     
+      valid_acc  = 0.0
       valid_bar_text = 'Validation data'
-    
+
       n_batch = self.valid_loader.__len__()
       for batch in tqdm(self.valid_loader, desc=valid_bar_text, ncols=self.tqdm_ncols, unit='batch'):
         new_valid_loss, new_valid_acc, _ = self.eval_batch(batch)
@@ -99,7 +99,7 @@ class LearningLoop(object):
     # TESTING
     self.model.eval()
     test_loss = 0.0
-    test_acc  = 0.0   
+    test_acc  = 0.0
     y_hat_batchs = []
     test_bar_text ='Testing   data'
 
@@ -113,7 +113,7 @@ class LearningLoop(object):
     test_loss = test_loss / n_batch
     test_acc  = test_acc / n_batch
     y_hat = torch.cat(y_hat_batchs, 0)
-    
+
     print('Test : loss: {:.4f}    acc: {:.4f} '.format(test_loss, test_acc))
     return y_hat
 
@@ -125,7 +125,7 @@ class LearningLoop(object):
     if self.cuda_flag:
       x = x.cuda()
       y = y.cuda()
-  
+
     x = Variable(x, requires_grad=False)
     y = Variable(y, requires_grad=False)
 
@@ -171,7 +171,7 @@ class LearningLoop(object):
     torch.save(ckpt, filename)
     print('State file: {} saved.'.format(os.path.basename(filename)))
     return
-    
+
   def load_state_file(self, filename):
     print('')
     if os.path.exists(filename):
@@ -195,7 +195,7 @@ class LearningLoop(object):
     y_v = torch.max(y, dim=1)[1]
     acc = torch.mean((y_hat_v == y_v).type(torch.FloatTensor))
     return acc.item()
-  
+
   def accuracy(self, y_hat, y):
     y_hat_v = torch.max(y_hat, dim=1)[1]
     acc = torch.mean((y_hat_v == y).type(torch.FloatTensor))
@@ -206,7 +206,7 @@ class LearningLoop(object):
     for params in list(self.model.parameters()):
       norm+=params.norm(2).data[0]
     print('Sum of weights norms: {}'.format(norm))
-  
+
   def print_params_count(self):
     count = 0
     for params in list(self.model.parameters()):
@@ -218,5 +218,3 @@ class LearningLoop(object):
     for i, params in enumerate(list(self.model.parameters())):
       norm+=params.grad.norm(2).data[0]
     print('Sum of grads norms: {}'.format(norm))
-
-

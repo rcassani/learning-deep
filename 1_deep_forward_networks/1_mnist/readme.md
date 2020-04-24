@@ -25,7 +25,8 @@ Both models were trained with a learning rate of 0.5, L2 of 1, a maximun number 
 These are some examples from the test set, [T]rue and [P]redicted labels are indicated.
 
 <center>
-<img src="https://user-images.githubusercontent.com/8238803/80164991-6690ff80-85a8-11ea-9a75-1df8b8d5183f.png" style="width: 100%;"/><br>
+<img src="https://user-images.githubusercontent.com/8238803/80164991-6690ff80-85a8-11ea-9a75-1df8b8d5183f.png" style="width: 100%;"/>
+
 Classification results with `mlp_simple` model
 </center>  
 

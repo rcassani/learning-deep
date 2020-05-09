@@ -10,7 +10,7 @@ python -i train_dnn.py --epochs=50 --ngpus=1 --lr=0.5 --l2=1 --model=mlp_simple
 ```
 alternatively, `the final_state.pt` file can be loaded as:
 ```bash
-python -i train_dnn.py --ngpus=1 --model=mlp_simple --final_state=final_state_mlp_simple.pt
+python -i train_dnn.py --ngpus=1 --model=mlp_simple --final-state
 ```
 
 ## Learning and Accuracy curves

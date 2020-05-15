@@ -170,6 +170,18 @@ for ix_e in range(5):
         plt.title(str(ix_k))
         plt.imshow(tmp_tensor.data.numpy()[0, ix_k, :, :], cmap='gray') 
     
-    
+# True and Predicted labels for some examples
+examples = np.random.randint(10000, size=40)
+plt.figure()
+for ix_example in range(len(examples)):
+  index = examples[ix_example]
+  X = test_dataset.samples[index]
+  y = test_dataset.labels[index] 
+  tmp = np.reshape(X, [28,28])
+  ax = plt.subplot(5,8, ix_example + 1)
+  ax.set_yticklabels([])
+  ax.set_xticklabels([])
+  plt.title('T'+ str(y) + ', P' + str(y_hat[index]))
+  plt.imshow(tmp, cmap='gray')   
 
     

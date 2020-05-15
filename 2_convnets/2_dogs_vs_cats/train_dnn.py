@@ -27,6 +27,11 @@ import sys
 sys.path.append('../../utils/')
 from learning_loop import LearningLoop    # general learning loop
 
+# Terminal: 
+# python -i train_dnn.py --epochs=100 --ngpus=1 --lr=0.5 --l2=1 --model=small_cnn
+# Spyder terminal
+# runfile('train_dnn.py', '--epochs=100 --ngpus=1 --lr=0.5 --l2=1 --model=small_cnn')
+
 # Training settings
 parser = argparse.ArgumentParser(description='Template PyTorch')
 parser.add_argument('--train-batch-size', type=int, default=64,  metavar='N', help='input batch size for training (default:  64)')

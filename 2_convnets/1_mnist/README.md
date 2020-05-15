@@ -43,9 +43,9 @@ From the kernels it is possible to see some of learnt properties. For example ke
 
 |   |   |
 |---|---|
-| <img src="https://user-images.githubusercontent.com/8238803/81992494-92d0f680-9611-11ea-8103-38003e5d5b5e.png" style="width: 400px;"/> | <img src="https://user-images.githubusercontent.com/8238803/81992498-96647d80-9611-11ea-92fa-772e0caa2206.png" style="width: 400px;"/> |
+| <img src="https://user-images.githubusercontent.com/8238803/81992494-92d0f680-9611-11ea-8103-38003e5d5b5e.png" style="width: 400px;"> | <img src="https://user-images.githubusercontent.com/8238803/81992498-96647d80-9611-11ea-92fa-772e0caa2206.png" style="width: 400px;"> |
 
-<p align="center">
-<img src="https://user-images.githubusercontent.com/8238803/81992523-a54b3000-9611-11ea-9bdd-35c13ba78b1d.png" style="width: 400px;"/>
-Feature maps for the examples 0, 1, and 5. Obtained with the 10 kernels for the first layer in the `medium_cnn`model
+<p align="center"> 
+<img src="https://user-images.githubusercontent.com/8238803/81992523-a54b3000-9611-11ea-9bdd-35c13ba78b1d.png" width=400><br>  
+10 kernels for the first layer in the `medium_cnn`model
 </p>

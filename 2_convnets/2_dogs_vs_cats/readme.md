@@ -11,7 +11,7 @@ Data available in:
 The model that was used is described in [`model_zoo.py`](model_zoo.py)) with the name `large_cnn_2` The input for is a 3-channel image of 64 by 64 pixels, and the output is 2 classes (dogs and cats).
 
 <p align="center">
-<img src="https://user-images.githubusercontent.com/8238803/82124583-f96b2700-976d-11ea-962c-4d3fe7ff3424.png", width=500>
+<img src="https://user-images.githubusercontent.com/8238803/82125982-84045400-9777-11ea-8ddf-7491303e262a.png", width=500>
 <br>
 <code>mlp_simple</code> model, input is 3<span>&#215;</span>64<span>&#215;</span>64
 </p>

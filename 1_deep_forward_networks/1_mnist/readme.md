@@ -4,8 +4,9 @@
 The used architecture or model is described in [`model_zoo.py`](model_zoo.py)) with the name `mlp_simple`. It is a n MLP with layer sizes: [784, 25, 10, 10], this is to say, 2 hidden layers. ReLU was used as activation function.
 
 <p align="center">
-<img src="https://user-images.githubusercontent.com/8238803/82124583-f96b2700-976d-11ea-962c-4d3fe7ff3424.png" width=500>
-`mlp_simple` model, input is 1<span>&#215;</span>784
+<img src="https://user-images.githubusercontent.com/8238803/82124583-f96b2700-976d-11ea-962c-4d3fe7ff3424.png", width=200>
+<br>
+<code>mlp_simple</code> model, input is 1<span>&#215;</span>784
 </p>
 
 ## Training the MLP

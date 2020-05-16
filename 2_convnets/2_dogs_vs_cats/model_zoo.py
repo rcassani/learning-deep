@@ -42,7 +42,7 @@ class large_cnn(nn.Module):
 class large_cnn_2(nn.Module):
     # Model
     def __init__(self):
-        super(large_cnn, self).__init__()
+        super(large_cnn_2, self).__init__()
         self.features = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=5, padding=2, stride=1),
             nn.ReLU(True),  
@@ -62,7 +62,7 @@ class large_cnn_2(nn.Module):
             nn.Conv2d(256, 512, kernel_size=3, padding=1, stride=1),
             nn.ReLU(True),
             nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.BatchNorm2d(256),
+            nn.BatchNorm2d(512),
 
             nn.Conv2d(512, 512, kernel_size=3, padding=1, stride=1),
             nn.ReLU(True),

@@ -119,23 +119,6 @@ valid_loader = DataLoader(valid_dataset, batch_size=args.valid_batch_size, shuff
 test_loader  = DataLoader(test_dataset , batch_size=args.test_batch_size , shuffle=False, num_workers=args.n_workers)
 
 
-#
-#
-#
-#train_indices = indices[: train_size]
-#valid_indices = indices[train_size : train_size + valid_size]
-#test_indices  = indices[train_size + valid_size : ]
-#
-## data samplers
-#train_sampler = data.SubsetRandomSampler(train_indices)
-#valid_sampler = data.SubsetRandomSampler(valid_indices)
-#test_sampler  = data.SubsetRandomSampler(test_indices)
-#
-## data loaders
-#train_loader = DataLoader(dog_cat_dataset, sampler=train_sampler, batch_size=args.train_batch_size, num_workers=args.n_workers)
-#valid_loader = DataLoader(dog_cat_dataset, sampler=valid_sampler, batch_size=args.valid_batch_size, num_workers=args.n_workers)
-#test_loader  = DataLoader(dog_cat_dataset, sampler=test_sampler, batch_size=args.test_batch_size , num_workers=args.n_workers)
-
 # 1. Model design and GPU capability
 print('Model = ' + args.model)
 model = getattr(model_zoo, args.model)()
@@ -208,21 +191,25 @@ for ix_example in range(len(examples)):
 #  
 
 #%% get random image
-image = Image.open(r'./poupoune.jpg'); ty = 0  #0cat 1dog
-
-x = transforms.functional.to_tensor(image)
-x.unsqueeze_(0)
-if cuda_flag:
-  x = x.cuda()
-y = torch.tensor([[ty]])
-print(x.shape)
-
-output = tester.model.forward(x)
-val, output = torch.max(output, dim=1)
-out = output.item()
-
+image_files = ['poupoune.jpg', 'spock.jpg', 'poupoune2.jpg']
+true_ys = [0, 1, 0] #0cat 1dog
 
 plt.figure()
-plt.title(('predicted: ' + classes[out] + ',   {:.4f}').format(val.item()))
-plt.imshow(image)
+for ix, (image_file, true_y) in enumerate(zip(image_files, true_ys)):
+    image = Image.open(r'./' + image_file); 
+
+    x = transforms.functional.to_tensor(image)
+    x.unsqueeze_(0)
+    if cuda_flag:
+      x = x.cuda()
+    y = torch.tensor([[true_y]])
+    print(x.shape)
+
+    output = tester.model.forward(x)
+    val, output = torch.max(output, dim=1)
+    out = output.item()
+
+    plt.subplot(1,3,ix+1)
+    plt.title(('predicted: ' + classes[out] + ',   {:.4f}').format(val.item()))
+    plt.imshow(image)
     

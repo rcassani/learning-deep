@@ -28,9 +28,9 @@ sys.path.append('../../utils/')
 from learning_loop import LearningLoop    # general learning loop
 
 # Terminal: 
-# python -i train_dnn.py --epochs=100 --ngpus=1 --lr=0.5 --l2=1 --model=small_cnn
+# python -i train_dnn.py --epochs=100 --ngpus=1 --lr=0.5 --l2=1 --model=large_cnn_2
 # Spyder terminal
-# runfile('train_dnn.py', '--epochs=100 --ngpus=1 --lr=0.5 --l2=1 --model=small_cnn')
+# runfile('train_dnn.py', '--epochs=100 --ngpus=1 --lr=0.5 --l2=1 --model=large_cnn_2')
 
 # Training settings
 parser = argparse.ArgumentParser(description='Template PyTorch')

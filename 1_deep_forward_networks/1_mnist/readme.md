@@ -20,7 +20,7 @@ python -i train_dnn.py --ngpus=1 --model=mlp_simple --final-state
 ```
 
 ## Learning and Accuracy curves
-The models was trained with a learning rate of 0.5, L2 of 1, a maximum number of 50 epochs, SGD as optimizer and cross cross entropy as loss function. Below the plots for loss and accuracy vs epochs.
+The model was trained with a learning rate of 0.5, L2 of 1, a maximum number of 50 epochs, SGD as optimizer and cross cross entropy as loss function. Below the plots for loss and accuracy vs epochs.
 
 |   |   |
 |---|---|

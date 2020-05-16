@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 import os
+import glob
 
 import model_zoo                         # model to train 
 
@@ -212,4 +213,45 @@ for ix, (image_file, true_y) in enumerate(zip(image_files, true_ys)):
     plt.subplot(1,3,ix+1)
     plt.title(('predicted: ' + classes[out] + ',   {:.4f}').format(val.item()))
     plt.imshow(image)
-    
+
+#%% create CSV file for submission in Kaggle
+# create a list of the files sorted by number
+def get_number(filename):
+  return int(filename[:-4])
+
+test_dir = r'../../data/dogs_vs_cats/testset/test/'
+filenames = []
+for filename in os.listdir(test_dir):
+    if filename.endswith(".jpg"):
+        filenames.append(filename)
+
+filenames = sorted(filenames, key=get_number)
+
+y_hats = []    
+for filename in filenames:
+    print(filename)
+    image = Image.open(test_dir + filename); 
+
+    x = transforms.functional.to_tensor(image)
+    x.unsqueeze_(0)
+    if cuda_flag:
+      x = x.cuda()
+    print(x.shape)
+    if x.shape[1] == 1:
+      x = x.expand(1,3,64,64)
+    print(x.shape)
+
+    output = tester.model.forward(x)
+    val, output = torch.max(output, dim=1)
+    y_hats.append(output.item())
+y_hats = np.array(y_hats)
+
+##text=List of strings to be written to file
+with open('./test_kraggle.csv','w') as file:
+  file.write('id,label')
+  file.write('\n')
+  for filename, y_hat in zip(filenames, y_hats):
+    file.write(str(get_number(filename)) + ',' + classes[y_hat])
+    file.write('\n')
+
+

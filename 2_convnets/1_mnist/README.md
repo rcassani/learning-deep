@@ -3,6 +3,11 @@
 ## Architectures
 Two models were used, these described in [`model_zoo.py`](model_zoo.py)) with the name `small_cnn` and `medium_cnn`. The input for both models is a 1-channel image of 28 by 28 pixels, and the output is 10 classes (digits).
 
+|   |   |
+|---|---|
+| <img src="https://user-images.githubusercontent.com/8238803/82125015-00dfff80-9771-11ea-950b-ca8c86475bda.png" style="width: 400px;"> | <img src="https://user-images.githubusercontent.com/8238803/82125017-02a9c300-9771-11ea-8f8d-ace6d202c653.png" style="width: 400px;"> |
+| `small_cnn` | `medium_cnn` |
+
 ## Training the models
 The model can be trained from the terminal with the command:  
 ```bash
@@ -45,7 +50,7 @@ From the kernels it is possible to see some of learnt properties. For example ke
 |---|---|
 | <img src="https://user-images.githubusercontent.com/8238803/81992494-92d0f680-9611-11ea-8103-38003e5d5b5e.png" style="width: 400px;"> | <img src="https://user-images.githubusercontent.com/8238803/81992498-96647d80-9611-11ea-92fa-772e0caa2206.png" style="width: 400px;"> |
 
-<p align="center"> 
+ <p align="center">
 <img src="https://user-images.githubusercontent.com/8238803/81992523-a54b3000-9611-11ea-9bdd-35c13ba78b1d.png" width=400><br>  
 10 kernels for the first layer in the `medium_cnn`model
 </p>

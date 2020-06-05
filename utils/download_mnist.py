@@ -36,4 +36,4 @@ for dataset, dataset_name in zip(datasets, dataset_names):
     file = h5py.File('../data/mnist/' + dataset_name + '.hdf5', 'w')
     file.create_dataset('samples', data=dataset[0])
     file.create_dataset('labels' , data=dataset[1])
-    file.close
+    file.close()

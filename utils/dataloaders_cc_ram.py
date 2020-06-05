@@ -14,10 +14,10 @@ class Loader(Dataset):
         # Import CC data
         dir_this_script = os.path.dirname(os.path.realpath(__file__))
 
-        with h5py.File(dir_this_script  + '/../data/corpus_callosum/corpus_callosum.hdf5', 'rb') as f:
+        with h5py.File(dir_this_script  + '/../data/corpus_callosum/corpus_callosum.hdf5', 'r') as f:
             # Get the data
-            X_all = f['X']
-            Y_all = f['Y']
+            X_all = f['X'][()]
+            Y_all = f['Y'][()]
         
         if set_type == 'train':         
             # 18 samples for training
@@ -41,7 +41,7 @@ class Loader(Dataset):
             
         self.Y = Y
         self.X = X
-        self.__len = len(self.labels)
+        self.__len = self.X.shape[3]
         
     def __getitem__(self, index):
             return torch.from_numpy(self.X[index]).float(), torch.from_numpy(self.Y[index]).long() 

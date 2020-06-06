@@ -78,6 +78,7 @@ class LearningLoop(object):
       self.history['valid_acc'].append(valid_acc)
 
       print('')
+      print('Epoch: ' + str(self.ix_epoch).zfill(4))
       print('Train: loss: {:.4f}    acc: {:.4f} '.format(train_loss, train_acc))
       print('Valid: loss: {:.4f}    acc: {:.4f} '.format(valid_loss, valid_acc))
 

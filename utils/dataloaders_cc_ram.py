@@ -21,8 +21,8 @@ class Loader(Dataset):
         
         if set_type == 'train':         
             # 18 samples for training
-            X = X_all[:,:,:,0:18]
-            Y = Y_all[:,:,:,0:18]  
+            X = X_all[:,:,:,0:24]
+            Y = Y_all[:,:,:,0:24]  
         elif set_type == 'validation':
             # 6 samples for validation
             X = X_all[:,:,:,18:24]
@@ -39,9 +39,9 @@ class Loader(Dataset):
             print("Error, value for 'set_type' parameter is not valid")
             return
             
-        self.Y = Y
-        self.X = X
-        self.__len = self.X.shape[3]
+        self.X = X.transpose()
+        self.Y = Y.transpose()
+        self.__len = self.X.shape[0]
         
     def __getitem__(self, index):
             return torch.from_numpy(self.X[index]).float(), torch.from_numpy(self.Y[index]).long() 

@@ -17,20 +17,20 @@ class Loader(Dataset):
         with h5py.File(dir_this_script  + '/../data/corpus_callosum/corpus_callosum.hdf5', 'r') as f:
             # Get the data
             X_all = f['X'][()]
-            Y_all = f['Y'][()]
+            Y_all = f['Y'][()]       
         
         if set_type == 'train':         
             # 18 samples for training
-            X = X_all[:,:,:,0:24]
-            Y = Y_all[:,:,:,0:24]  
+            X = X_all[0:192,0:224,:,0:30]
+            Y = Y_all[0:192,0:224,:,0:30]  
         elif set_type == 'validation':
             # 6 samples for validation
-            X = X_all[:,:,:,18:24]
-            Y = Y_all[:,:,:,18:24]  
+            X = X_all[0:192,0:224,:,18:24]
+            Y = Y_all[0:192,0:224,:,18:24]  
         elif set_type == 'test':
             # 6 samples for testing
-            X = X_all[:,:,:,24:30]
-            Y = Y_all[:,:,:,24:30]  
+            X = X_all[0:192,0:224,:,24:30]
+            Y = Y_all[0:192,0:224,:,24:30]  
         elif set_type == 'all':
             # 6 samples for testing
             X = X_all

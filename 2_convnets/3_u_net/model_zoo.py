@@ -6,7 +6,7 @@ class PrintLayerSize(nn.Module):
         super(PrintLayerSize, self).__init__()
         
     def forward(self, x):
-        print(x.shape)
+#        print(x.shape)
         return x
 
 class Down(nn.Module):
@@ -75,8 +75,7 @@ class unet_small(nn.Module):
             PrintLayerSize(),
             nn.Upsample(scale_factor=2, mode='bilinear',align_corners=True),
             nn.Conv2d(1, 2, kernel_size=3, stride=1, padding=1),
-#            nn.ReLU(True),
-#            nn.Softmax(),
+            nn.Softmax(dim=1),
             PrintLayerSize()
             )      
 

@@ -13,12 +13,12 @@ import numpy as np
 import os
 
 import model_zoo                         # model to train 
-from learning_loop import LearningLoop    
 
 # import scripts from the 'utils' directory 
 import sys
 sys.path.append('../../utils/')
 from dataloaders_cc_ram import Loader
+from learning_loop import LearningLoop    
 
 # Terminal: 
 # python -i train_dnn.py --epochs=500 --ngpus=1 --lr=0.5 --l2=1 --model=unet_small
@@ -86,9 +86,10 @@ if cuda_flag:
     model = model.cuda()
 
 # 2. Loss and Optimizer
-optimizer = optim.RMSprop(model.parameters(), lr=args.lr, weight_decay=1e-8, momentum=0.9) 
-#optimizer = optim.SGD(model.parameters(), lr=args.lr)
-loss_funct = torch.nn.CrossEntropyLoss() #weight= torch.tensor([0.03, 0.97]).to(torch.device("cuda:0")))
+#optimizer = optim.RMSprop(model.parameters(), lr=args.lr, weight_decay=1e-8, momentum=0.9) 
+optimizer = optim.SGD(model.parameters(), lr=args.lr)
+loss_funct = torch.nn.CrossEntropyLoss(weight=torch.tensor([0.01, 0.99]).cuda())
+#loss_funct = torch.nn.CrossEntropyLoss()
 
 if not (args.final_state and os.path.exists('./final_state_' + args.model + '.pt')):
   # 3. Create training loop and train

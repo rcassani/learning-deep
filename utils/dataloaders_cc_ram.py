@@ -21,8 +21,8 @@ class Loader(Dataset):
         
         if set_type == 'train':         
             # 18 samples for training
-            X = X_all[0:192,0:224,:,0:30]
-            Y = Y_all[0:192,0:224,:,0:30]  
+            X = X_all[0:192,0:224,:,0:18]
+            Y = Y_all[0:192,0:224,:,0:18]  
         elif set_type == 'validation':
             # 6 samples for validation
             X = X_all[0:192,0:224,:,18:24]

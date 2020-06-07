@@ -21,9 +21,9 @@ from dataloaders_cc_ram import Loader
 from learning_loop import LearningLoop    
 
 # Terminal: 
-# python -i train_dnn.py --epochs=500 --ngpus=1 --lr=0.5 --l2=1 --model=unet_small
+# python -i train_dnn.py --epochs=8000 --ngpus=1 --lr=0.1 --model=unet_small --patience=5000
 # Spyder terminal
-# runfile('train_dnn.py', '--epochs=500 --ngpus=1 --lr=0.5 --l2=1 --model=unet_small')
+# runfile('train_dnn.py', '--epochs=8000 --ngpus=1 --lr=0.1 --model=unet_small --patience=5000')
 
 
 # Training settings
